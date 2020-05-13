@@ -1,0 +1,49 @@
+﻿@model OrderViewModel
+
+@{
+    ViewData["Title"] = "OrderSuccess";
+}
+
+    <div>
+        <h1>Order succeed</h1>
+        <h6>shipping address:</h6>
+        <p>@Model.User.StreetAddress, @Model.User.City, @Model.User.State, @Model.User.ZipCode</p>
+        <h6>contact info:</h6>
+        <p>Name: @Model.User.FirstName, @Model.User.LastName</p>
+        <p>Email: @Model.User.Email</p>
+        <p> Phone: @Model.User.PhoneNumber</p>
+    </div>
+
+
+    <h3>Order Summary</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Order.OrderRows) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
