@@ -27,7 +27,7 @@
                         </div>
                         <div class="col-5">
                             <p>@Html.DisplayFor(modelItem => modelItem.Products[i].Quantity)</p>
-                            <p>@Html.DisplayFor(modelItem => modelItem.Products[i].Product.Price)</p>
+                            <p>@Model.Products[i].Product.Price.ToString("C")</p>
                             <p>@{var tp = Model.Products[i].Product.Price * Model.Products[i].Quantity;} @tp.ToString("C")</p>
                         </div>
                     </div>
