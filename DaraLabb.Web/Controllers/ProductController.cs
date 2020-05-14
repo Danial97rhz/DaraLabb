@@ -20,10 +20,19 @@ namespace DaraLabb.Web.Controllers
             _categoryRepository = categoryRepository;
         }
 
-        public ViewResult List()
+        public ViewResult List(string category)
         {
             ProductsListViewModel vm = new ProductsListViewModel();
-            vm.products = _productRepository.GetAll();
+
+            if (string.IsNullOrEmpty(category))
+            {
+                vm.products = _productRepository.GetAll();
+            }
+            else
+            {
+                vm.products = _productRepository.GetAll().Where(x => x.Category.Name == category);
+            }
+
             return View(vm);
         }
 
