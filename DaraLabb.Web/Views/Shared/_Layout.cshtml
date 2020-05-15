@@ -25,11 +25,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="List">Products</a>
-                        </li>
+                        </li>*@
+                        @await Component.InvokeAsync("CategoryDropDown")
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="List">Cart <span id="cartItem-counter"></span></a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="List"><img src="~/Images/IconCart.png" style="height:auto; max-width:28px" /> <span id="cartItem-counter"></span></a>
                         </li>
                     </ul>
                 </div>
