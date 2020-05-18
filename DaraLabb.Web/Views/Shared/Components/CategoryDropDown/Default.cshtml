@@ -1,0 +1,18 @@
+﻿@model IEnumerable<DaraLabb.Web.Models.Category>
+
+<li class="dropdown">
+    <a asp-controller="Product"
+       class="dropdown-toggle nav-link text-dark" data-toggle="dropdown">Products</a>
+    <ul class="dropdown-menu">
+        <li>
+            <a class="text-dark" asp-controller="Product" asp-action="List" asp-route-Category="">All Products</a>
+        </li>
+        @foreach (var category in Model)
+        {
+            <li>
+                <a class="text-dark" asp-controller="Product" asp-action="List"
+                   asp-route-category="@category.Name">@category.Name</a>
+            </li>
+        }
+    </ul>
+</li>
