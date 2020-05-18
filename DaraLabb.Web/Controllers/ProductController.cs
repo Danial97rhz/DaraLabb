@@ -27,10 +27,12 @@ namespace DaraLabb.Web.Controllers
             if (string.IsNullOrEmpty(category))
             {
                 vm.products = _productRepository.GetAll();
+                vm.Category = "All Products";
             }
             else
             {
                 vm.products = _productRepository.GetAll().Where(x => x.Category.Name == category);
+                vm.Category = category;
             }
 
             return View(vm);

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http;
 using DaraLabb.Web.Models;
 using DaraLabb.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace DaraLabb.Web.Controllers
 {
@@ -51,6 +53,7 @@ namespace DaraLabb.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> PlaceOrder([Bind("TotalPrice,Products")]CartViewModel Cart)
         {
             OrderViewModel vm = new OrderViewModel();
@@ -65,7 +68,8 @@ namespace DaraLabb.Web.Controllers
             }
             vm.Order = order;
             vm.User = await _userManager.GetUserAsync(User);
-            
+
+
             return View("OrderSuccess", vm);
         }
     }
