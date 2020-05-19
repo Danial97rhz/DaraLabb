@@ -18,7 +18,7 @@ namespace DaraLabb.Web.Api
         //    _productRepository = productRepository;
         //}
 
-        static int itemCounter = 0;
+        //static int itemCounter = 0;
         [HttpGet]
         public IActionResult AddToCart(Guid id)
         {
@@ -27,16 +27,16 @@ namespace DaraLabb.Web.Api
             
             if (cart.Value != null)
             {
-                itemCounter++;
+                /*itemCounter++*/;
                 cartContent = cart.Value;
                 cartContent += "," + id;
             }
-            else { itemCounter++; cartContent += id; }
+            else { /*itemCounter++*/; cartContent += id; }
 
             Response.Cookies.Append("cart", cartContent);
 
             //TODO: how to count guid ??
-            //var itemCounter = cartContent.Count()/Guid.NewGuid().ToString().Count();
+            var itemCounter = cartContent.Replace(",", "").Count() / Guid.NewGuid().ToString().Count();
 
 
             return Ok(itemCounter);
@@ -46,6 +46,15 @@ namespace DaraLabb.Web.Api
         [HttpGet]
         public int CartCount()
         {
+            var cart = Request.Cookies.SingleOrDefault(x => x.Key == "cart");
+            var cartContent = cart.Value;
+            var itemCounter = 0;
+
+            if (cartContent != null)
+            {
+                itemCounter = cartContent.Replace(",", "").Count() / Guid.NewGuid().ToString().Count();
+            }
+
             return itemCounter;
         }
 

@@ -23,33 +23,37 @@ namespace DaraLabb.Web.Controllers
         public IActionResult List()
         {
             var cart = Request.Cookies.SingleOrDefault(c => c.Key == "cart");
-            var cartIds = cart.Value.Split(',');
-            var products = _productRepository.GetAll();
-
             var vm = new CartViewModel();
-            vm.Products = new List<CartItem>();
 
-            foreach (string id in cartIds)
+            if (cart.Value != null)
             {
-                var guid = Guid.Parse(id);
+                var cartIds = cart.Value.Split(',');
+                var products = _productRepository.GetAll();
 
-                if (vm.Products.Count > 0 && vm.Products.Any(x => x.Product?.Id == guid))
+                vm.Products = new List<CartItem>();
+
+                foreach (string id in cartIds)
                 {
-                    int productIndex = vm.Products.FindIndex(x => x.Product.Id == guid);
-                    vm.Products[productIndex].Quantity += 1;
-                }
-                else
-                {
-                    var p = _productRepository.GetById(guid);
-                    if (p != null)
+                    var guid = Guid.Parse(id);
+
+                    if (vm.Products.Count > 0 && vm.Products.Any(x => x.Product?.Id == guid))
                     {
-                        vm.Products.Add(new CartItem() { Quantity = 1, Product = p });
+                        int productIndex = vm.Products.FindIndex(x => x.Product.Id == guid);
+                        vm.Products[productIndex].Quantity += 1;
+                    }
+                    else
+                    {
+                        var p = _productRepository.GetById(guid);
+                        if (p != null)
+                        {
+                            vm.Products.Add(new CartItem() { Quantity = 1, Product = p });
+                        }
                     }
                 }
+                vm.TotalPrice = vm.Products.Sum(x => x.Product.Price * x.Quantity);
             }
-            vm.TotalPrice = vm.Products.Sum(x => x.Product.Price * x.Quantity);
 
-            return View(vm);
+                return View(vm); 
         }
 
         [HttpPost]
