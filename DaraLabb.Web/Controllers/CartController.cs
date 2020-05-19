@@ -73,6 +73,7 @@ namespace DaraLabb.Web.Controllers
             vm.Order = order;
             vm.User = await _userManager.GetUserAsync(User);
 
+            Response.Cookies.Delete("cart");
 
             return View("OrderSuccess", vm);
         }
