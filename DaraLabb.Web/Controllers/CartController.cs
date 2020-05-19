@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using DaraLabb.Web.Models;
+using DaraLabb.Web.Services;
 using DaraLabb.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,12 @@ namespace DaraLabb.Web.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly UserManager<User> _userManager;
-        public CartController(IProductRepository productRepository, UserManager<User> userManager)
+        private readonly IOrderRepository _orderRepository;
+        public CartController(IProductRepository productRepository, UserManager<User> userManager, IOrderRepository orderRepository)
         {
             _productRepository = productRepository;
             _userManager = userManager;
+            _orderRepository = orderRepository;
         }
         public IActionResult List()
         {
@@ -65,17 +68,32 @@ namespace DaraLabb.Web.Controllers
             order.TotalPrice = Cart.TotalPrice;
             order.Date = DateTime.Now;
             order.UserId = Guid.Parse(_userManager.GetUserId(User));
-            //order.OrderRows = vm.Products.Select(cartItem => new OrderRow(cartItem)).ToList();
+            
             foreach (var cartItem in Cart.Products)
             {
                 order.OrderRows.Add((OrderRow)cartItem);
             }
+            foreach (var item in order.OrderRows)
+            {
+                order.ItemCount += item.Quantity;
+            }
             vm.Order = order;
             vm.User = await _userManager.GetUserAsync(User);
 
+            order.Address = vm.User.StreetAddress + ", " + vm.User.ZipCode + ", " + vm.User.City + ", " + vm.User.State;
+
+            _orderRepository.addToOrderHirtory(order);
             Response.Cookies.Delete("cart");
 
             return View("OrderSuccess", vm);
         }
+
+        public IActionResult OrderHistory() 
+        {
+            var orders = _orderRepository.GetAll();
+            
+            return View(orders); 
+        }
+
     }
 }
