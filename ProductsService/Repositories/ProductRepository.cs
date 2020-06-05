@@ -14,6 +14,31 @@ namespace ProductsService.Models
             _context = context;
         }
 
+        public Product Create(Product product)
+        {
+            _context.Products.Add(product);
+            _context.SaveChanges();
+
+            return product;
+        }
+
+        public bool Delete(Guid id)
+        {
+            try
+            {
+                var product = GetById(id);
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
+
         public IEnumerable<Product> GetAll()
         {
             var products = _context.Products.ToList();

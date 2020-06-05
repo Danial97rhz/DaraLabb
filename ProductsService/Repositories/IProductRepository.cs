@@ -7,7 +7,10 @@ namespace ProductsService.Models
 {
     public interface IProductRepository
     {
-        IEnumerable<Product> GetAll();
-        Product GetById(Guid id);
+        public IEnumerable<Product> GetAll();
+        public Product GetById(Guid id);
+        public Product Create(Product product);
+        public bool Delete(Guid id);
+
     }
 }

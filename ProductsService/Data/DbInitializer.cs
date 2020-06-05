@@ -26,7 +26,7 @@ namespace ProductsService.Data
             {
                 new Product
                 {
-                      Id = Guid.Empty,
+                      Id = Guid.NewGuid(),
                       Name = "CROWN GOLD",
                       Price = 399,
                       InStock = true,
