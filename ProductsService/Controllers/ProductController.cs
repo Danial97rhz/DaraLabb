@@ -50,7 +50,7 @@ namespace ProductsService.Controllers
         }
 
         [HttpDelete]
-        public ActionResult<Product> Delete(Guid id)
+        public ActionResult<Guid> Delete(Guid id)
         {
             var deletedProduct = _productRepository.Delete(id);
             return Ok(id);

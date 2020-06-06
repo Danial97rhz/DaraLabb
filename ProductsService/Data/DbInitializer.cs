@@ -18,15 +18,14 @@ namespace ProductsService.Data
             }
             var categories = new Category[]
             {
-                new Category { Id = Guid.NewGuid(), Name = "Rings" },
-                new Category { Id = Guid.NewGuid(), Name = "Earrings" }
+                new Category { Name = "Rings" },
+                new Category { Name = "Earrings" }
             };
 
             var products = new List<Product>
             {
                 new Product
                 {
-                      Id = Guid.NewGuid(),
                       Name = "CROWN GOLD",
                       Price = 399,
                       InStock = true,
@@ -35,7 +34,6 @@ namespace ProductsService.Data
                 },
                 new Product
                 {
-                     Id = Guid.NewGuid(),
                      Name = "COMPASS GOLD",
                      Price = 179,
                      InStock = true,
@@ -44,7 +42,6 @@ namespace ProductsService.Data
                 },
                 new Product
                 {
-                      Id = Guid.NewGuid(),
                       Name = "BLACK DIAMOND SKULL",
                       Price = 1799,
                       InStock = true,
@@ -53,7 +50,6 @@ namespace ProductsService.Data
                 },
                 new Product
                 {
-                     Id = Guid.NewGuid(),
                      Name = "EAGLE",
                      Price = 489,
                      InStock = true,
@@ -62,7 +58,6 @@ namespace ProductsService.Data
                 },
                 new Product
                 {
-                     Id = Guid.NewGuid(),
                      Name = "CROWN",
                      Price = 219,
                      InStock = true,
@@ -71,7 +66,6 @@ namespace ProductsService.Data
                 },
                 new Product
                 {
-                     Id = Guid.NewGuid(),
                      Name = "FALCON",
                      Price = 399,
                      InStock = true,
@@ -80,7 +74,6 @@ namespace ProductsService.Data
                 },
                 new Product
                 {
-                     Id = Guid.NewGuid(),
                      Name = "EAR STUDS SKULL PAVÉ",
                      Price = 399,
                      InStock = true,
@@ -89,7 +82,6 @@ namespace ProductsService.Data
                 },
                 new Product
                 {
-                     Id = Guid.NewGuid(),
                      Name = "EARRINGS FEATHER",
                      Price = 249,
                      InStock = true,

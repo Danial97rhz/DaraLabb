@@ -5,9 +5,13 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DaraLabb.Web", "DaraLabb.Web\DaraLabb.Web.csproj", "{30A98D19-7531-4417-A64C-354359F9C6DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsService.Tests", "ProductsService.Tests\ProductsService.Tests.csproj", "{DC51865A-CCDC-4CEC-8CA6-5BFAEBE4CF3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductsService.Tests", "ProductsService.Tests\ProductsService.Tests.csproj", "{DC51865A-CCDC-4CEC-8CA6-5BFAEBE4CF3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsService", "ProductsService\ProductsService.csproj", "{846FE74C-CACF-47F2-AC02-452F539EF352}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductsService", "ProductsService\ProductsService.csproj", "{846FE74C-CACF-47F2-AC02-452F539EF352}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Test", "OrderService.Test\OrderService.Test.csproj", "{1C4AAB0D-A8DF-4DE8-943A-D4DE121903C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "OrderService\OrderService.csproj", "{367838EA-A4B0-4F34-8ACF-F17019888EA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{846FE74C-CACF-47F2-AC02-452F539EF352}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{846FE74C-CACF-47F2-AC02-452F539EF352}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{846FE74C-CACF-47F2-AC02-452F539EF352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C4AAB0D-A8DF-4DE8-943A-D4DE121903C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C4AAB0D-A8DF-4DE8-943A-D4DE121903C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C4AAB0D-A8DF-4DE8-943A-D4DE121903C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C4AAB0D-A8DF-4DE8-943A-D4DE121903C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{367838EA-A4B0-4F34-8ACF-F17019888EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{367838EA-A4B0-4F34-8ACF-F17019888EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{367838EA-A4B0-4F34-8ACF-F17019888EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{367838EA-A4B0-4F34-8ACF-F17019888EA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
