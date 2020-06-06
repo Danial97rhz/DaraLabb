@@ -36,7 +36,7 @@ namespace OrderService.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Product> Create([FromBody] Order order)
+        public ActionResult<Order> Create([FromBody] Order order)
         {
             var createdOrder = _orderRepository.Create(order);
             return Ok(createdOrder);
