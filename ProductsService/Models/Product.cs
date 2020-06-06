@@ -13,7 +13,7 @@ namespace ProductsService.Models
         public decimal Price { get; set; }
         public string ImgUrl { get; set; }
         public bool InStock { get; set; }
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
     }
 }

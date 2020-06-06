@@ -27,7 +27,8 @@ namespace OrderService.Controllers
             return Ok(orders);
         }
 
-        [HttpGet("id")]
+        [HttpGet]
+        [Route("{id:Guid}")]
         public ActionResult<Order> GetById(Guid id)
         {
             var order = _orderRepository.GetById(id);

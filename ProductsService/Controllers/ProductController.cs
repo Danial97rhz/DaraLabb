@@ -28,10 +28,16 @@ namespace ProductsService.Controllers
             return Ok(products);
         }
 
-        [HttpGet("id")]
+        [HttpGet]
+        [Route("{id:Guid}")]
         public ActionResult<Product> GetById(Guid id)
         {
             var product = _productRepository.GetById(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
             return Ok(product);
         }
 

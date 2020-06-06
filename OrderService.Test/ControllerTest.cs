@@ -36,9 +36,9 @@ namespace OrderService.Test
         {
             using (var client = new TestClientProvider().Client)
             {
-                var orderResponse = await client.GetAsync($"/api/order/getbyid?id={_fixture.order.Id}");
+                var OrderResponse = await client.GetAsync($"/api/order/getbyid/{_fixture.order.Id}");
 
-                using (var responseStream = await orderResponse.Content.ReadAsStreamAsync())
+                using (var responseStream = await OrderResponse.Content.ReadAsStreamAsync())
                 {
                     var order = await JsonSerializer.DeserializeAsync<Order>(responseStream,
                         new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });

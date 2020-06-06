@@ -26,10 +26,9 @@ namespace ProductsService.Tests
                     new Product
                     {
                         Name = "TestProduct",
-                        Price = 0,
+                        Price = 99M,
                         ImgUrl = "https://testpicture.com",
-                        InStock = false,
-                        CategoryId = Guid.Parse("2560a3f2-bd7d-42d2-89d2-946c9dab43b1")
+                        InStock = false
                     }
                     );
 
