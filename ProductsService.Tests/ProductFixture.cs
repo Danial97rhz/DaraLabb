@@ -11,7 +11,6 @@ namespace ProductsService.Tests
     public class ProductFixture
     {
         public Product product { get; private set; }
-        public object JsonSerialize { get; private set; }
 
         public ProductFixture()
         {
@@ -45,12 +44,12 @@ namespace ProductsService.Tests
             }
         }
 
-        public async void Dispose()
-        {
-            using (var client = new TestClientProvider().Client)
-            {
-                var deleteResponse = await client.DeleteAsync($"/api/product/delete?id={product.Id}");
-            }
-        }
+        //public async void Dispose()
+        //{
+        //    using (var client = new TestClientProvider().Client)
+        //    {
+        //        var deleteResponse = await client.DeleteAsync($"/api/product/delete?id={product.Id}");
+        //    }
+        //}
     }
 }

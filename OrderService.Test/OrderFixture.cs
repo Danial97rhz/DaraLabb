@@ -11,7 +11,6 @@ namespace OrderService.Test
     public class OrderFixture
     {
         public Order order { get; private set; }
-        public object JsonSerialize { get; private set; }
 
         public OrderFixture()
         {
@@ -42,12 +41,5 @@ namespace OrderService.Test
             }
         }
 
-        public async void Dispose()
-        {
-            using (var client = new TestClientProvider().Client)
-            {
-                var deleteResponse = await client.DeleteAsync($"/api/order/delete?id={order.Id}");
-            }
-        }
     }
 }
