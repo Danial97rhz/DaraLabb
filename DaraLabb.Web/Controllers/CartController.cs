@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using DaraLabb.Web.Models;
@@ -17,7 +18,8 @@ namespace DaraLabb.Web.Controllers
 {
     public class CartController : Controller
     {
-        string Baseurl = "http://localhost:64728/api/order";
+        string OrderBaseurl = "http://localhost:64728/api/order/";
+        string ProductBaseurl = "http://localhost:59235/api/product/";
 
         private readonly IProductRepository _productRepository;
         private readonly UserManager<User> _userManager;
@@ -28,7 +30,7 @@ namespace DaraLabb.Web.Controllers
             _userManager = userManager;
             _orderRepository = orderRepository;
         }
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
             var cart = Request.Cookies.SingleOrDefault(c => c.Key == "cart");
             var vm = new CartViewModel();
@@ -36,7 +38,26 @@ namespace DaraLabb.Web.Controllers
             if (cart.Value != null)
             {
                 var cartIds = cart.Value.Split(',');
-                var products = _productRepository.GetAll();
+                var products = new List<Product>();
+
+                using (var client = new HttpClient())
+                {
+
+                    client.BaseAddress = new Uri(ProductBaseurl);
+
+                    client.DefaultRequestHeaders.Clear();
+
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpResponseMessage Res = await client.GetAsync("getall");
+
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        var response = Res.Content.ReadAsStringAsync().Result;
+
+                        products = JsonConvert.DeserializeObject<List<Product>>(response);
+                    }
+                }
 
                 vm.Products = new List<CartItem>();
 
@@ -51,7 +72,7 @@ namespace DaraLabb.Web.Controllers
                     }
                     else
                     {
-                        var p = _productRepository.GetById(guid);
+                        var p = products.Where(x => x.Id == guid).First();
                         if (p != null)
                         {
                             vm.Products.Add(new CartItem() { Quantity = 1, Product = p });
@@ -87,7 +108,19 @@ namespace DaraLabb.Web.Controllers
 
             order.Address = vm.User.StreetAddress + ", " + vm.User.ZipCode + ", " + vm.User.City + ", " + vm.User.State;
 
-            _orderRepository.addToOrderHirtory(order);
+            //_orderRepository.addToOrderHirtory(order);
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(OrderBaseurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpContent content = new StringContent(System.Text.Json.JsonSerializer.Serialize(order), Encoding.UTF8, "application/json");
+
+                HttpResponseMessage Res = await client.PostAsync("create", content);
+            }
+
             Response.Cookies.Delete("cart");
 
             return View("OrderSuccess", vm);
@@ -104,7 +137,7 @@ namespace DaraLabb.Web.Controllers
             using (var client = new HttpClient())
             {
 
-                client.BaseAddress = new Uri(Baseurl);
+                client.BaseAddress = new Uri(OrderBaseurl);
 
                 client.DefaultRequestHeaders.Clear();
 

@@ -14,7 +14,7 @@ namespace DaraLabb.Web.Controllers
 {
     public class ProductController : Controller
     {
-        string Baseurl = "http://localhost:59235/";
+        string Baseurl = "http://localhost:59235/api/product/";
 
         //private readonly IProductRepository _productRepository;
         //private readonly ICategoryRepository _categoryRepository;
@@ -38,7 +38,7 @@ namespace DaraLabb.Web.Controllers
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage Res = await client.GetAsync("api/product/getall");
+                HttpResponseMessage Res = await client.GetAsync("getall");
 
                 if (Res.IsSuccessStatusCode)
                 {
