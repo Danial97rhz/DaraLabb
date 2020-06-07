@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 using DaraLabb.Web.Models;
@@ -8,12 +10,15 @@ using DaraLabb.Web.Services;
 using DaraLabb.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace DaraLabb.Web.Controllers
 {
     public class CartController : Controller
     {
+        string Baseurl = "http://localhost:64728/api/order";
+
         private readonly IProductRepository _productRepository;
         private readonly UserManager<User> _userManager;
         private readonly IOrderRepository _orderRepository;
@@ -56,7 +61,7 @@ namespace DaraLabb.Web.Controllers
                 vm.TotalPrice = vm.Products.Sum(x => x.Product.Price * x.Quantity);
             }
 
-                return View(vm); 
+            return View(vm);
         }
 
         [HttpPost]
@@ -68,7 +73,7 @@ namespace DaraLabb.Web.Controllers
             order.TotalPrice = Cart.TotalPrice;
             order.Date = DateTime.Now;
             order.UserId = Guid.Parse(_userManager.GetUserId(User));
-            
+
             foreach (var cartItem in Cart.Products)
             {
                 order.OrderRows.Add((OrderRow)cartItem);
@@ -88,12 +93,36 @@ namespace DaraLabb.Web.Controllers
             return View("OrderSuccess", vm);
         }
 
-        public IActionResult OrderHistory() 
+        public async Task<IActionResult> OrderHistoryAsync()
         {
-            var orders = _orderRepository.GetAll();
-            
-            return View(orders); 
-        }
+            //var orders = _orderRepository.GetAll();
 
+            //return View(orders);
+
+            var orders = new List<Order>();
+
+            using (var client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res = await client.GetAsync("getall");
+
+                if (Res.IsSuccessStatusCode)
+                {
+                    var response = Res.Content.ReadAsStringAsync().Result;
+
+                    orders = JsonConvert.DeserializeObject<List<Order>>(response);
+                }
+
+                return View(orders);
+
+            }
+
+        }
     }
 }

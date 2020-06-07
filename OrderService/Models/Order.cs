@@ -12,5 +12,6 @@ namespace OrderService.Models
         public DateTime Date { get; set; }
         public decimal TotalPrice { get; set; }
         public List<OrderRow> OrderRows { get; set; }
+        public string Address { get; set; }
     }
 }
