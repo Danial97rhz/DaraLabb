@@ -17,15 +17,11 @@ namespace DaraLabb.Web.Models
         public DateTime Date { get; set; }
         public decimal TotalPrice { get; set; }
         public List<OrderRow> OrderRows { get; set; }
+        public int ItemCount { get; set; }
+        public string Address { get; set; }
     }
     public class OrderRow
     {
-        public OrderRow() { }
-        public OrderRow(CartItem cartItem)
-        {
-            Product = cartItem.Product;
-            Quantity = cartItem.Quantity;
-        }
         public Product Product { get; set; }
         public int Quantity { get; set; }
 

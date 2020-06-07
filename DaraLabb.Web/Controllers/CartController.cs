@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http;
 using DaraLabb.Web.Models;
+using DaraLabb.Web.Services;
 using DaraLabb.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace DaraLabb.Web.Controllers
 {
@@ -13,44 +16,51 @@ namespace DaraLabb.Web.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly UserManager<User> _userManager;
-        public CartController(IProductRepository productRepository, UserManager<User> userManager)
+        private readonly IOrderRepository _orderRepository;
+        public CartController(IProductRepository productRepository, UserManager<User> userManager, IOrderRepository orderRepository)
         {
             _productRepository = productRepository;
             _userManager = userManager;
+            _orderRepository = orderRepository;
         }
         public IActionResult List()
         {
             var cart = Request.Cookies.SingleOrDefault(c => c.Key == "cart");
-            var cartIds = cart.Value.Split(',');
-            var products = _productRepository.GetAll();
-
             var vm = new CartViewModel();
-            vm.Products = new List<CartItem>();
 
-            foreach (string id in cartIds)
+            if (cart.Value != null)
             {
-                var guid = Guid.Parse(id);
+                var cartIds = cart.Value.Split(',');
+                var products = _productRepository.GetAll();
 
-                if (vm.Products.Count > 0 && vm.Products.Any(x => x.Product?.Id == guid))
+                vm.Products = new List<CartItem>();
+
+                foreach (string id in cartIds)
                 {
-                    int productIndex = vm.Products.FindIndex(x => x.Product.Id == guid);
-                    vm.Products[productIndex].Quantity += 1;
-                }
-                else
-                {
-                    var p = _productRepository.GetById(guid);
-                    if (p != null)
+                    var guid = Guid.Parse(id);
+
+                    if (vm.Products.Count > 0 && vm.Products.Any(x => x.Product?.Id == guid))
                     {
-                        vm.Products.Add(new CartItem() { Quantity = 1, Product = p });
+                        int productIndex = vm.Products.FindIndex(x => x.Product.Id == guid);
+                        vm.Products[productIndex].Quantity += 1;
+                    }
+                    else
+                    {
+                        var p = _productRepository.GetById(guid);
+                        if (p != null)
+                        {
+                            vm.Products.Add(new CartItem() { Quantity = 1, Product = p });
+                        }
                     }
                 }
+                vm.TotalPrice = vm.Products.Sum(x => x.Product.Price * x.Quantity);
             }
-            vm.TotalPrice = vm.Products.Sum(x => x.Product.Price * x.Quantity);
 
-            return View(vm);
+                return View(vm); 
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> PlaceOrder([Bind("TotalPrice,Products")]CartViewModel Cart)
         {
             OrderViewModel vm = new OrderViewModel();
@@ -58,15 +68,32 @@ namespace DaraLabb.Web.Controllers
             order.TotalPrice = Cart.TotalPrice;
             order.Date = DateTime.Now;
             order.UserId = Guid.Parse(_userManager.GetUserId(User));
-            //order.OrderRows = vm.Products.Select(cartItem => new OrderRow(cartItem)).ToList();
+            
             foreach (var cartItem in Cart.Products)
             {
                 order.OrderRows.Add((OrderRow)cartItem);
             }
+            foreach (var item in order.OrderRows)
+            {
+                order.ItemCount += item.Quantity;
+            }
             vm.Order = order;
             vm.User = await _userManager.GetUserAsync(User);
-            
+
+            order.Address = vm.User.StreetAddress + ", " + vm.User.ZipCode + ", " + vm.User.City + ", " + vm.User.State;
+
+            _orderRepository.addToOrderHirtory(order);
+            Response.Cookies.Delete("cart");
+
             return View("OrderSuccess", vm);
         }
+
+        public IActionResult OrderHistory() 
+        {
+            var orders = _orderRepository.GetAll();
+            
+            return View(orders); 
+        }
+
     }
 }
