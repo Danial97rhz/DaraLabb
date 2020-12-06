@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using DaraLabb.Web.Models;
 using System.Globalization;
 using AutoMapper;
+using DaraLabb.Web.Services;
 
 namespace DaraLabb.Web
 {
@@ -48,6 +49,7 @@ namespace DaraLabb.Web
 
             services.AddSingleton<IProductRepository, MockProductRepository >();
             services.AddSingleton<ICategoryRepository, MockCategoryRepository>();
+            services.AddSingleton<IOrderRepository, OrderRepository>();
 
             //Mapper.Initialize(cfg => cfg.CreateMap<Product, CartViewModel>());
         }
