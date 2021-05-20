@@ -16,6 +16,7 @@ using DaraLabb.Web.Models;
 using System.Globalization;
 using AutoMapper;
 using DaraLabb.Web.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace DaraLabb.Web
 {
@@ -31,6 +32,13 @@ namespace DaraLabb.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -70,6 +78,7 @@ namespace DaraLabb.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            //app.UseCookiePolicy();
 
             app.UseRouting();
 
