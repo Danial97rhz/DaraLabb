@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Models;
 using OrderService.Repositories;
+using OrderService.Filters;
+
 
 namespace OrderService.Controllers
 {
     [Route("api/[controller]/[Action]")]
+    [ApiKeyAuth]
     [ApiController]
     public class OrderController : ControllerBase
     {
