@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using DaraLabb.Web.Models;
 using DaraLabb.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,14 @@ namespace DaraLabb.Web.Controllers
 {
     public class ProductController : Controller
     {
-        string Baseurl = "http://localhost:59235/api/product/";
+        private readonly string _productApiRoot;
+        private readonly IConfiguration _config;
+
+        public ProductController(IConfiguration config)
+        {
+            _config = config;
+            _productApiRoot = _config.GetValue(typeof(string), "ProductApiRoot").ToString();
+        }
 
         //private readonly IProductRepository _productRepository;
         //private readonly ICategoryRepository _categoryRepository;
@@ -27,14 +35,17 @@ namespace DaraLabb.Web.Controllers
 
         public async Task<ActionResult> List(string category)
         {
+            var apikey = _config.GetValue<string>("ApiKeys:ProductApiKey");
             var products = new List<Product>();
 
             using (var client = new HttpClient())
             {
 
-                client.BaseAddress = new Uri(Baseurl);
+                client.BaseAddress = new Uri(_productApiRoot);
 
                 client.DefaultRequestHeaders.Clear();
+
+                client.DefaultRequestHeaders.Add("ApiKey", apikey);
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -59,7 +70,7 @@ namespace DaraLabb.Web.Controllers
                 //{
                 //    vm.products = products.Where(x => x.Category.Name == category);
                 //}
-                
+
                 return View(vm);
             }
         }

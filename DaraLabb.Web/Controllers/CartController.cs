@@ -11,6 +11,7 @@ using DaraLabb.Web.Services;
 using DaraLabb.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
@@ -18,22 +19,28 @@ namespace DaraLabb.Web.Controllers
 {
     public class CartController : Controller
     {
-        string OrderBaseurl = "http://localhost:64728/api/order/";
-        string ProductBaseurl = "http://localhost:59235/api/product/";
+        private readonly string _productApiRoot;
+        private readonly string _orderApiRoot;
+        private readonly IConfiguration _config;
+        
 
         private readonly IProductRepository _productRepository;
         private readonly UserManager<User> _userManager;
         private readonly IOrderRepository _orderRepository;
-        public CartController(IProductRepository productRepository, UserManager<User> userManager, IOrderRepository orderRepository)
+        public CartController(IProductRepository productRepository, UserManager<User> userManager, IOrderRepository orderRepository, IConfiguration config)
         {
             _productRepository = productRepository;
             _userManager = userManager;
             _orderRepository = orderRepository;
+            _config = config;
+            _productApiRoot = _config.GetValue(typeof(string), "ProductApiRoot").ToString();
+            _orderApiRoot = _config.GetValue(typeof(string), "OrderApiRoot").ToString();
         }
         public async Task<IActionResult> List()
         {
             var cart = Request.Cookies.SingleOrDefault(c => c.Key == "cart");
             var vm = new CartViewModel();
+            var apikey = _config.GetValue<string>("ApiKeys:ProductApiKey");
 
             if (cart.Value != null)
             {
@@ -43,9 +50,11 @@ namespace DaraLabb.Web.Controllers
                 using (var client = new HttpClient())
                 {
 
-                    client.BaseAddress = new Uri(ProductBaseurl);
+                    client.BaseAddress = new Uri(_productApiRoot);
 
                     client.DefaultRequestHeaders.Clear();
+
+                    client.DefaultRequestHeaders.Add("ApiKey", apikey);
 
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -94,6 +103,7 @@ namespace DaraLabb.Web.Controllers
             order.TotalPrice = Cart.TotalPrice;
             order.Date = DateTime.Now;
             order.UserId = Guid.Parse(_userManager.GetUserId(User));
+            var apikey = _config.GetValue<string>("ApiKeys:OrderApiKey");
 
             foreach (var cartItem in Cart.Products)
             {
@@ -112,8 +122,9 @@ namespace DaraLabb.Web.Controllers
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(OrderBaseurl);
+                client.BaseAddress = new Uri(_orderApiRoot);
                 client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("ApiKey", apikey);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 HttpContent content = new StringContent(System.Text.Json.JsonSerializer.Serialize(order), Encoding.UTF8, "application/json");
@@ -133,13 +144,16 @@ namespace DaraLabb.Web.Controllers
             //return View(orders);
 
             var orders = new List<Order>();
+            var apikey = _config.GetValue<string>("ApiKeys:OrderApiKey");
 
             using (var client = new HttpClient())
             {
 
-                client.BaseAddress = new Uri(OrderBaseurl);
+                client.BaseAddress = new Uri(_orderApiRoot);
 
                 client.DefaultRequestHeaders.Clear();
+
+                client.DefaultRequestHeaders.Add("ApiKey", apikey);
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
