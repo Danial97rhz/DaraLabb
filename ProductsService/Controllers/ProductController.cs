@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ProductsService.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductsService.Models;
@@ -21,6 +22,7 @@ namespace ProductsService.Controllers
             _categoryRepository = categoryRepository;
         }
 
+        [ApiKeyAuth]
         [HttpGet]
         public ActionResult<Product> GetAll()
         {
